@@ -27,6 +27,8 @@ function getID(base64: boolean = true) {
     else return ID;
 }
 
+app.use(express.static(path.join(__dirname, "uploads/")));
+
 app.post("/upload", upload.single("file"), (req, res) => {
     if(!req.headers.authorization) return res.status(401).end();
     if(req.headers.authorization !== process.env.AUTHORIZATION) return res.status(403).end();
