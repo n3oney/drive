@@ -32,14 +32,25 @@ app.use(express.static("uploads"));
 app.post("/upload", upload.single("file"), (req, res) => {
     if(!req.headers.authorization) return res.status(401).end();
     if(req.headers.authorization !== process.env.AUTHORIZATION) return res.status(403).end();
-    const ID = getID() as string;
-    fs.writeFile(path.join(__dirname, "uploads/", ID, `${path.extname(req.file.filename)}`), req.file.buffer as Buffer, (err) => {
+    const ID = String(getID());
+    fs.writeFile(path.join(__dirname, "uploads/", `${ID}${path.extname(req.file.originalname)}`), req.file.buffer as Buffer, (err) => {
         if(err) return res.status(500).end();
         res.status(201).json({
-            URL: `https://drive.neoney.xyz/${ID}${path.extname(req.file.filename)}`
-        })
+            URL: `https://drive.neoney.xyz/${ID}${path.extname(req.file.originalname)}`,
+            // deletionURL: `https://drive.neoney.xyz/delete/${ID}`
+        });
     });
 });
+
+// NOT A CORRECT IMPLEMENTATION FOR ShareX!
+
+// app.post("/delete/:id", (req, res) => {
+//     if(!req.headers.authorization) return res.status(401).end();
+//     if(req.headers.authorization !== process.env.AUTHORIZATION) return res.status(403).end();
+//     const ID = req.params.id;
+//     fs.unlinkSync(path.join(__dirname, "uploads/", `${ID}.*`));
+//     res.status(200).end();
+// });
 
 app.post("/reset", (req, res) => {
     if(!req.headers.authorization) return res.status(401).end();
