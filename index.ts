@@ -17,7 +17,7 @@ const upload = multer({
 });
 
 function reset() {
-    fs.unlinkSync(path.join(__dirname, "uploads/*.*"));
+    fs.unlinkSync(path.join(__dirname, dev ? "uploads/*.*" : "../uploads/*.*"));
     return db.prepare("DELETE FROM counter; DELETE FROM sqlite_sequence WHERE name='counter'").run();
 }
 
@@ -33,7 +33,7 @@ app.post("/upload", upload.single("file"), (req, res) => {
     if(!req.headers.authorization) return res.status(401).end();
     if(req.headers.authorization !== process.env.AUTHORIZATION) return res.status(403).end();
     const ID = String(getID());
-    fs.writeFile(path.join(__dirname, "uploads/", `${ID}${path.extname(req.file.originalname)}`), req.file.buffer as Buffer, (err) => {
+    fs.writeFile(path.join(__dirname, dev ? "uploads/" : "../uploads/", `${ID}${path.extname(req.file.originalname)}`), req.file.buffer as Buffer, (err) => {
         if(err) return res.status(500).end();
         res.status(201).json({
             URL: `https://drive.neoney.xyz/${ID}${path.extname(req.file.originalname)}`,
