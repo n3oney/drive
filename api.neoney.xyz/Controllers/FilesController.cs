@@ -16,15 +16,15 @@ namespace api.neoney.xyz.Controllers
             using var srs = new StreamReader(x.OpenReadStream());
             Console.WriteLine(x.FileName);
             var filepath = Path.Combine(Directory.GetCurrentDirectory(), "images", x.FileName);
-            
+
             await using var fs = new FileStream(filepath, FileMode.Create);
             srs.BaseStream.Seek(0, SeekOrigin.Begin);
             await srs.BaseStream.CopyToAsync(fs);
             fs.Close();
 
-            return Ok(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Release"
-                ? "https://drive.neoney.xyz/"
-                : "http://localhost:5000/" + x.FileName);
+            return Ok((Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development"
+                ? "http://localhost:5000/"
+                : "https://drive.neoney.xyz/") + x.FileName);
         }
     }
 }
