@@ -17,7 +17,7 @@ namespace api.neoney.xyz
                     webBuilder.UseStartup<Startup>()
                         .UseKestrel(options =>
                         {
-                            options.Limits.MaxRequestBodySize = null;
+                            options.Limits.MaxRequestBodySize = long.MaxValue;
                         });
                 });
     }
