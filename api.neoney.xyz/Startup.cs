@@ -29,6 +29,8 @@ namespace api.neoney.xyz
             { 
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "images"))
             });
+            
+            
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
